@@ -193,6 +193,10 @@ We evaluated Fun-ASR against other state-of-the-art models on open-source benchm
 <img src="images/compare_en.png" width="800" />
 </div>
 
+## Remarkable Third-Party Work
+
+- vLLM (GPU) Deployment Best Practices: An accelerated implementation of Fun-ASR using vLLM. [Repository](https://github.com/yuekaizhang/Fun-ASR-vllm/README.md)
+
 ## Citations
 
 ```bibtex

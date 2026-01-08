@@ -193,6 +193,10 @@ if __name__ == "__main__":
 <img src="images/compare_zh.png" width="800" />
 </div>
 
+## 优秀三方工作
+
+- vLLM (GPU) 最佳部署时间: 使用 vLLM 实现对 Fun-ASR 的加速. [Repository](https://github.com/yuekaizhang/Fun-ASR-vllm/README.md)
+
 ## Citations
 
 ```bibtex
