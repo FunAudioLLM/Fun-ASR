@@ -289,7 +289,7 @@ html = """
 """
 
 # Global Queue for ASR Thread -> WebSocket
-msg_queue = queue.Queue()
+msg_queue = queue.Queue(maxsize=1000)
 asr_ready_event = threading.Event()
 
 class ConnectionManager:
@@ -434,7 +434,7 @@ class AudioStream:
             
             # Broadcast VAD prob
             try:
-                msg_queue.put({"type": "vad", "prob": float(prob)})
+                msg_queue.put_nowait({"type": "vad", "prob": float(prob)})
             except:
                 pass
 
@@ -546,7 +546,7 @@ async def broadcast_worker():
             await asyncio.sleep(1)
 
 # Main Application Setup
-audio_queue = queue.Queue()
+audio_queue = queue.Queue(maxsize=50)
 
 # Parse Args for File Mode
 parser = argparse.ArgumentParser()
