@@ -516,6 +516,7 @@ def asr_worker(audio_queue):
                 #language="中文",
                 itn=True,
                 disable_pbar=True,
+                max_length=50,
             )
             text = res[0]["text"]
             
