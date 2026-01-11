@@ -28,7 +28,8 @@ try:
 except ImportError:
     PYAUDIO_AVAILABLE = False
 
-from funasr import AutoModel
+from mlx_audio.stt.models.funasr import Model
+import tempfile
 
 # Configuration
 CHUNKSZ = 512  # 32ms at 16kHz
@@ -486,40 +487,33 @@ class AudioStream:
 
 def asr_worker(audio_queue):
     # Initialize Model
-    model_dir = "FunAudioLLM/Fun-ASR-Nano-2512"
-    device = "cuda:0" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
-    
-    print(f"Loading ASR model on {device}...")
-    model = AutoModel(
-        model=model_dir,
-        trust_remote_code=True,
-        remote_code="./model.py",
-        device=device,
-        hub="ms",
-        fp16=True,
-    )
+    print("Loading MLX ASR model...")
+    model = Model.from_pretrained("mlx-community/Fun-ASR-Nano-2512-fp16")
     print("ASR Model Loaded.")
     asr_ready_event.set()
 
     while True:
         try:
             msg_type, audio_data = audio_queue.get()
-            audio_tensor = torch.from_numpy(audio_data.astype(np.float32) / 32768.0)
             
             # Notify start
             msg_queue.put({"type": "asr_start"})
             
-            res = model.generate(
-                input=[audio_tensor],
-                cache={},
-                #hotwords=["小 P。"], # KEEP
-                batch_size=1,
-                #language="中文",
-                itn=True,
-                disable_pbar=True,
-                max_length=50,
-            )
-            text = res[0]["text"]
+            # Create temp file
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                tmp_name = tmp.name
+            
+            # audio_data is np.int16, need to save with torchaudio
+            # Torchaudio save expects Tensor (channels, time)
+            # audio_data is (time,)
+            tensor = torch.from_numpy(audio_data).unsqueeze(0)
+            torchaudio.save(tmp_name, tensor, RATE)
+
+            result = model.generate(tmp_name)
+            text = result.text
+            
+            # Clean up
+            os.remove(tmp_name)
             
             # Notify end (with result)
             if text:
