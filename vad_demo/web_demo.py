@@ -495,7 +495,8 @@ def asr_worker(audio_queue):
         trust_remote_code=True,
         remote_code="./model.py",
         device=device,
-        hub="ms"
+        hub="ms",
+        fp16=True,
     )
     print("ASR Model Loaded.")
     asr_ready_event.set()
