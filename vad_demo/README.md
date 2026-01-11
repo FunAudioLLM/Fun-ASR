@@ -26,11 +26,11 @@
 在此状态下，系统持续收集音频数据并根据策略触发识别。
 
 *   **行为**: 将后续的音频 Chunk 持续追加到 `speech_buffer`。
-*   **增量更新策略 (Batch Processing)**:
+    *   **增量更新策略 (Batch Processing)**:
     *   为了减少 GPU/CPU 负载，不会对每个 Chunk 都进行识别。
     *   **逻辑**: 维护 `speech_chunks_since_update` 计数器。
-    *   当积累满 **60 个 Chunks** (约 1.92秒) 时 -> 触发一次 **Partial ASR**。
-    *   *效果*: 用户每隔约 2 秒看到一次字幕更新，而不是逐字跳动。
+    *   当积累满 **30 个 Chunks** (约 0.96秒) 时 -> 触发一次 **Partial ASR**。
+    *   *效果*: 用户每隔约 1 秒看到一次字幕更新，而不是逐字跳动。
 
 ### 3. 状态：句子结束判定 (Sentence Finalization)
 *   **静音检测**:
@@ -38,8 +38,7 @@
     *   累加 `silence_counter`。
     *   一旦检测到语音 (VAD `> 0.5`)，立即重置 `silence_counter` 为 0（容忍句子中间的短暂停顿）。
 *   **状态迁移**:
-    *   当 `silence_counter` 持续时长超过 **800ms** -> 判定为句子结束。
-    *   **Action**:
+    *   当 `silence_counter` 持续时长超过 **500ms** -> 判定为句子结束。    *   **Action**:
         1. 将 `speech_buffer` 中的完整音频提交进行 **Final ASR**。
         2. 清空 `speech_buffer`。
         3. 重置所有计数器。

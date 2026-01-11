@@ -26,7 +26,7 @@ from funasr import AutoModel
 CHUNKSZ = 512  # 32ms at 16kHz
 RATE = 16000
 VAD_THRESHOLD = 0.5
-SILENCE_DURATION_MS = 800  # End sentence after 800ms silence
+SILENCE_DURATION_MS = 500  # End sentence after 500ms silence
 MIN_SPEECH_MS = 200        # Ignore speech shorter than 200ms
 
 class AudioStream:
@@ -99,7 +99,7 @@ class AudioStream:
         silence_counter = 0
         is_speech_active = False
         speech_chunks_since_update = 0
-        BATCH_SIZE = 60
+        BATCH_SIZE = 30
         
         chunks_per_sec = RATE / CHUNKSZ
         silence_chunks_thresh = int(SILENCE_DURATION_MS * chunks_per_sec / 1000)

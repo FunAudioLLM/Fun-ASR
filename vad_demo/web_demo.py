@@ -397,7 +397,7 @@ class AudioStream:
         silence_counter = 0
         is_speech_active = False
         speech_chunks_since_update = 0
-        BATCH_SIZE = 60
+        BATCH_SIZE = 30
         
         chunks_per_sec = RATE / CHUNKSZ
         silence_chunks_thresh = int(SILENCE_DURATION_MS * chunks_per_sec / 1000)
@@ -484,7 +484,7 @@ def asr_worker(audio_queue):
                 input=[audio_tensor],
                 cache={},
                 batch_size=1,
-                language="中文",
+                #language="中文",
                 itn=True,
                 disable_pbar=True,
             )
