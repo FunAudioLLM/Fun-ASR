@@ -392,6 +392,8 @@ class AudioStream:
 
     def _process_loop(self, generator):
         speech_buffer = []
+        pre_roll = []
+        PRE_ROLL_SIZE = 3
         silence_counter = 0
         is_speech_active = False
         speech_chunks_since_update = 0
@@ -417,6 +419,8 @@ class AudioStream:
             if prob > VAD_THRESHOLD:
                 if not is_speech_active:
                     is_speech_active = True
+                    # Add pre-roll
+                    speech_buffer.extend(pre_roll)
                 
                 silence_counter = 0
                 speech_buffer.append(audio_int16)
@@ -447,6 +451,11 @@ class AudioStream:
                         full_audio = np.concatenate(speech_buffer)
                         self.queue_out.put(("partial", full_audio))
                         speech_chunks_since_update = 0
+                else:
+                    # Keep track of pre-roll chunks while silent
+                    pre_roll.append(audio_int16)
+                    if len(pre_roll) > PRE_ROLL_SIZE:
+                        pre_roll.pop(0)
 
 def asr_worker(audio_queue):
     # Initialize Model
