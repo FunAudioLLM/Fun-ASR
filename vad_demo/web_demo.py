@@ -44,76 +44,225 @@ html = """
     <head>
         <title>FunASR Real-time Demo</title>
         <style>
-            body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f5f5f5; }
-            #container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-            h1 { color: #333; text-align: center; }
-            #status { text-align: center; color: #666; margin-bottom: 20px; }
-            .status-connected { color: green !important; }
-            .status-disconnected { color: red !important; }
-            #results { height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 20px; border-radius: 4px; background: #fafafa; }
-            .sentence { margin-bottom: 8px; padding: 5px; border-bottom: 1px solid #eee; }
-            .timestamp { color: #888; font-size: 0.8em; margin-right: 10px; }
-            #partial-container { height: 60px; border: 2px solid #007bff; padding: 10px; border-radius: 4px; display: flex; align-items: center; background: #f0f7ff; }
-            #partial { font-size: 1.2em; color: #0056b3; width: 100%; }
-            .placeholder { color: #ccc; font-style: italic; }
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; color: #333; }
+            #container { background-color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+            h1 { color: #1a1a1a; text-align: center; margin-bottom: 20px; font-weight: 600; }
+            
+            #status { text-align: center; font-weight: 500; margin-bottom: 20px; padding: 8px; border-radius: 6px; }
+            .status-connected { background-color: #e6fffa; color: #047857; border: 1px solid #047857; }
+            .status-disconnected { background-color: #fff5f5; color: #c53030; border: 1px solid #c53030; }
+            
+            #viz-container { margin-bottom: 25px; position: relative; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: #fff; }
+            canvas { display: block; width: 100%; height: 200px; }
+            .legend { display: flex; justify-content: center; gap: 20px; margin-top: 5px; font-size: 0.85em; color: #666; }
+            .legend-item { display: flex; align-items: center; gap: 5px; }
+            .dot { width: 10px; height: 10px; border-radius: 50%; }
+            
+            #results-area { display: flex; flex-direction: column; gap: 20px; }
+            
+            .box { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+            .box-header { background: #f9fafb; padding: 10px 15px; border-bottom: 1px solid #e5e7eb; font-weight: 600; font-size: 0.9em; color: #4b5563; text-transform: uppercase; letter-spacing: 0.05em; }
+            
+            #partial-container { padding: 20px; min-height: 60px; display: flex; align-items: center; background: #ffffff; font-size: 1.1em; color: #1f2937; }
+            .placeholder { color: #9ca3af; font-style: italic; }
+            
+            #final-results { height: 350px; overflow-y: auto; padding: 0; background: #ffffff; }
+            .sentence { padding: 12px 15px; border-bottom: 1px solid #f3f4f6; display: flex; gap: 10px; animation: fadeIn 0.3s ease; }
+            .sentence:last-child { border-bottom: none; }
+            .timestamp { color: #9ca3af; font-size: 0.85em; font-variant-numeric: tabular-nums; flex-shrink: 0; padding-top: 2px; }
+            .text { line-height: 1.5; }
+            
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+            
+            /* Scrollbar styling */
+            #final-results::-webkit-scrollbar { width: 8px; }
+            #final-results::-webkit-scrollbar-track { background: #f1f1f1; }
+            #final-results::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+            #final-results::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
         </style>
     </head>
     <body>
         <div id="container">
-            <h1>FunASR Live Stream</h1>
+            <h1>FunASR Live Demo</h1>
             <div id="status" class="status-disconnected">Disconnected</div>
             
-            <h3>Finalized Results:</h3>
-            <div id="results"></div>
-            
-            <h3>Current Speech:</h3>
-            <div id="partial-container">
-                <span id="partial" class="placeholder">Listening...</span>
+            <div id="viz-container">
+                <canvas id="vadCanvas" width="800" height="200"></canvas>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><span class="dot" style="background:#2563eb"></span> VAD Probability</div>
+                <div class="legend-item"><span class="dot" style="background:rgba(255, 165, 0, 0.3)"></span> ASR Processing</div>
+            </div>
+            <br>
+
+            <div id="results-area">
+                <div class="box">
+                    <div class="box-header">Current Input</div>
+                    <div id="partial-container">
+                        <span id="partial" class="placeholder">Listening...</span>
+                    </div>
+                </div>
+                
+                <div class="box">
+                    <div class="box-header">History</div>
+                    <div id="final-results"></div>
+                </div>
             </div>
         </div>
 
         <script>
-            var ws = new WebSocket("ws://" + location.host + "/ws");
-            var resultsDiv = document.getElementById("results");
-            var partialSpan = document.getElementById("partial");
-            var statusDiv = document.getElementById("status");
+            const ws = new WebSocket("ws://" + location.host + "/ws");
+            const canvas = document.getElementById("vadCanvas");
+            const ctx = canvas.getContext("2d");
+            
+            // Data buffers
+            const TIME_WINDOW = 10000; // 10 seconds history
+            let vadData = []; // {t: timestamp, v: value}
+            let asrEvents = []; // {start: timestamp, end: timestamp|null}
+            let currentAsrStart = null;
+            
+            // UI Elements
+            const partialSpan = document.getElementById("partial");
+            const finalResultsDiv = document.getElementById("final-results");
+            const statusDiv = document.getElementById("status");
 
-            ws.onopen = function() {
-                statusDiv.innerText = "Connected";
+            ws.onopen = () => {
+                statusDiv.innerText = "Connected to Server";
                 statusDiv.className = "status-connected";
+                requestAnimationFrame(drawLoop);
             };
 
-            ws.onmessage = function(event) {
-                var data = JSON.parse(event.data);
-                
-                if (data.type === "partial") {
-                    partialSpan.className = "";
-                    partialSpan.innerText = data.text;
-                } else if (data.type === "final") {
-                    partialSpan.innerText = ""; // Clear partial
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const now = Date.now();
+
+                if (data.type === "vad") {
+                    vadData.push({t: now, v: data.prob});
+                    // Prune old data
+                    if (vadData.length > 0 && now - vadData[0].t > TIME_WINDOW + 1000) {
+                        vadData.shift();
+                    }
+                } 
+                else if (data.type === "asr_start") {
+                    currentAsrStart = now;
+                }
+                else if (data.type === "partial" || data.type === "final") {
+                    // Text Update
+                    if (data.type === "partial") {
+                        partialSpan.className = "";
+                        partialSpan.innerText = data.text;
+                    } else {
+                        partialSpan.innerText = "";
+                        addFinalResult(data.text);
+                    }
                     
-                    var div = document.createElement("div");
-                    div.className = "sentence";
-                    
-                    var timeSpan = document.createElement("span");
-                    timeSpan.className = "timestamp";
-                    timeSpan.innerText = new Date().toLocaleTimeString();
-                    
-                    var textSpan = document.createElement("span");
-                    textSpan.innerText = data.text;
-                    
-                    div.appendChild(timeSpan);
-                    div.appendChild(textSpan);
-                    
-                    resultsDiv.appendChild(div);
-                    resultsDiv.scrollTop = resultsDiv.scrollHeight;
+                    // Close ASR event interval
+                    if (currentAsrStart !== null) {
+                        asrEvents.push({start: currentAsrStart, end: now});
+                        currentAsrStart = null;
+                    }
                 }
             };
+            
+            function addFinalResult(text) {
+                const div = document.createElement("div");
+                div.className = "sentence";
+                div.innerHTML = `
+                    <span class="timestamp">${new Date().toLocaleTimeString()}</span>
+                    <span class="text">${text}</span>
+                `;
+                finalResultsDiv.appendChild(div);
+                finalResultsDiv.scrollTop = finalResultsDiv.scrollHeight;
+            }
 
-            ws.onclose = function() {
-                statusDiv.innerText = "Disconnected (Server Stopped)";
+            ws.onclose = () => {
+                statusDiv.innerText = "Disconnected";
                 statusDiv.className = "status-disconnected";
             };
+
+            // Visualization Loop
+            function drawLoop() {
+                const now = Date.now();
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                // 1. Draw Grid / Background
+                ctx.strokeStyle = "#f0f0f0";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    let y = height * (i/4);
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                }
+                ctx.stroke();
+                
+                // Helper to map time to x
+                const getX = (t) => width - ((now - t) / TIME_WINDOW) * width;
+                
+                // 2. Draw ASR Regions (Orange Blocks)
+                ctx.fillStyle = "rgba(255, 165, 0, 0.3)"; // Orange transparent
+                
+                // Completed intervals
+                for (let evt of asrEvents) {
+                    if (now - evt.end > TIME_WINDOW) continue; // Skip old
+                    let x1 = getX(evt.start);
+                    let x2 = getX(evt.end);
+                    if (x1 < 0) x1 = 0;
+                    if (x2 > width) x2 = width;
+                    ctx.fillRect(x1, 0, x2 - x1, height);
+                }
+                // Ongoing interval
+                if (currentAsrStart !== null) {
+                    let x1 = getX(currentAsrStart);
+                    if (x1 < 0) x1 = 0;
+                    ctx.fillRect(x1, 0, width - x1, height);
+                }
+                
+                // Prune old ASR events
+                while(asrEvents.length > 0 && now - asrEvents[0].end > TIME_WINDOW + 1000) {
+                    asrEvents.shift();
+                }
+
+                // 3. Draw VAD Curve (Blue Line)
+                if (vadData.length > 1) {
+                    ctx.strokeStyle = "#2563eb"; // Blue
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    
+                    let started = false;
+                    for (let i = 0; i < vadData.length; i++) {
+                        const pt = vadData[i];
+                        if (now - pt.t > TIME_WINDOW) continue;
+                        
+                        const x = getX(pt.t);
+                        const y = height - (pt.v * height); // 0 at bottom, 1 at top
+                        
+                        if (!started) {
+                            ctx.moveTo(x, y);
+                            started = true;
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+                
+                // 4. Draw Threshold Line (Dotted)
+                const threshY = height - (0.5 * height);
+                ctx.strokeStyle = "#ef4444"; // Red
+                ctx.setLineDash([5, 5]);
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, threshY);
+                ctx.lineTo(width, threshY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                requestAnimationFrame(drawLoop);
+            }
         </script>
     </body>
 </html>
@@ -156,7 +305,7 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
 
-# --- ASR & VAD Logic (Adapted from demo_vad.py) ---
+# --- ASR & VAD Logic ---
 
 class AudioStream:
     def __init__(self, queue_out, file_path=None):
@@ -259,6 +408,12 @@ class AudioStream:
             with torch.no_grad():
                 prob = self.vad_model(audio_float32.to(self.device), RATE).item()
             
+            # Broadcast VAD prob
+            try:
+                msg_queue.put({"type": "vad", "prob": float(prob)})
+            except:
+                pass
+
             if prob > VAD_THRESHOLD:
                 if not is_speech_active:
                     is_speech_active = True
@@ -313,6 +468,9 @@ def asr_worker(audio_queue):
             msg_type, audio_data = audio_queue.get()
             audio_tensor = torch.from_numpy(audio_data.astype(np.float32) / 32768.0)
             
+            # Notify start
+            msg_queue.put({"type": "asr_start"})
+            
             res = model.generate(
                 input=[audio_tensor],
                 cache={},
@@ -323,9 +481,12 @@ def asr_worker(audio_queue):
             )
             text = res[0]["text"]
             
-            # Send to global queue for WebSocket broadcasting
+            # Notify end (with result)
             if text:
                 msg_queue.put({"type": msg_type, "text": text})
+            else:
+                # If no text (empty), still need to close the interval
+                 msg_queue.put({"type": msg_type, "text": ""})
                 
         except Exception as e:
             print(f"ASR Error: {e}")
@@ -334,11 +495,13 @@ def asr_worker(audio_queue):
 async def broadcast_worker():
     while True:
         try:
-            # Non-blocking get with async sleep to allow other tasks
-            while not msg_queue.empty():
+            # Send chunks of messages to avoid clogging
+            count = 0
+            while not msg_queue.empty() and count < 20:
                 data = msg_queue.get()
                 await manager.broadcast(json.dumps(data))
-            await asyncio.sleep(0.05)
+                count += 1
+            await asyncio.sleep(0.02)
         except Exception as e:
             print(f"Broadcast error: {e}")
             await asyncio.sleep(1)
