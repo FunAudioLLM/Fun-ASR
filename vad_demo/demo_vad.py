@@ -100,6 +100,7 @@ class AudioStream:
         is_speech_active = False
         speech_chunks_since_update = 0
         BATCH_SIZE = 30
+        MAX_SPEECH_CHUNKS = int(6 * RATE / CHUNKSZ) # 6 seconds
         
         chunks_per_sec = RATE / CHUNKSZ
         silence_chunks_thresh = int(SILENCE_DURATION_MS * chunks_per_sec / 1000)
@@ -127,7 +128,14 @@ class AudioStream:
                     speech_buffer.append(audio_int16)
                     speech_chunks_since_update += 1
                     
-                    if speech_chunks_since_update >= BATCH_SIZE:
+                    # Force Final if too long
+                    if len(speech_buffer) >= MAX_SPEECH_CHUNKS:
+                        full_audio = np.concatenate(speech_buffer)
+                        self.queue_out.put(("final", full_audio))
+                        speech_buffer = []
+                        speech_chunks_since_update = 0
+                        # We keep is_speech_active=True because VAD still says speech
+                    elif speech_chunks_since_update >= BATCH_SIZE:
                         full_audio = np.concatenate(speech_buffer)
                         self.queue_out.put(("partial", full_audio))
                         speech_chunks_since_update = 0
@@ -139,7 +147,7 @@ class AudioStream:
                         silence_counter += 1
                         speech_chunks_since_update += 1
                         
-                        if silence_counter >= silence_chunks_thresh:
+                        if silence_counter >= silence_chunks_thresh or len(speech_buffer) >= MAX_SPEECH_CHUNKS:
                             # Finalize sentence
                             is_speech_active = False
                             full_audio = np.concatenate(speech_buffer)
