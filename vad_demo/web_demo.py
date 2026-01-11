@@ -511,6 +511,7 @@ def asr_worker(audio_queue):
             res = model.generate(
                 input=[audio_tensor],
                 cache={},
+                #hotwords=["小 P。"], # KEEP
                 batch_size=1,
                 #language="中文",
                 itn=True,
