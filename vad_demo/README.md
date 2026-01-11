@@ -1,12 +1,12 @@
 # FunASR Real-time VAD + ASR Demo
 
-这是一个基于 FunASR 和 Silero VAD 实现的实时语音识别 Demo。包含命令行（CLI）版本和 Web 版本。
+这是一个基于 FunASR (移植到 MLX) 和 Silero VAD 实现的实时语音识别 Demo。包含命令行（CLI）版本和 Web 版本。
 
 ## 特性 (Features)
 
 *   **实时语音活动检测 (VAD)**: 集成 Silero VAD，精准检测语音片段。
 *   **流式识别**: 语音检测期间实时更新部分结果 (Partial)，句子结束（静音检测）后提交最终结果 (Final)。
-*   **Apple Silicon 优化**: 自动检测并使用 MPS (Metal Performance Shaders) 加速推理。
+*   **Apple Silicon 优化**: Web Demo 使用 MLX 框架进行原生硬件加速，极大提升推理效率。
 *   **Web 可视化**: 提供无闪烁的 Web 界面展示实时转写结果，包含 VAD 概率曲线与 ASR 处理耗时标记。
 *   **双模式输入**: 支持麦克风实时输入和音频文件模拟输入。
 
@@ -50,7 +50,7 @@
 请确保项目根目录下的依赖已安装，并额外安装以下库：
 
 ```bash
-pip install pyaudio fastapi uvicorn websockets
+pip install pyaudio fastapi uvicorn websockets mlx-audio
 ```
 
 *   **PyAudio 注意事项**:
