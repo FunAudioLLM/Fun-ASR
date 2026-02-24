@@ -52,6 +52,6 @@ def forced_align(log_probs: torch.Tensor, targets: torch.Tensor, blank: int = 0)
                     "score": round(score, 3),
                 }
             )
-    except:
+    except Exception:
         pass
     return items
