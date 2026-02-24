@@ -46,13 +46,13 @@ def safe_ja_g2p(text, kana=True, max_length=100):
             try:
                 converted = pyopenjtalk.g2p(part, kana=kana)
                 parts.append(converted)
-            except:
+            except Exception:
                 parts.append(part)  # 如果转换失败，使用原文本
         return ' '.join(parts)
     else:
         try:
             return pyopenjtalk.g2p(text, kana=kana)
-        except:
+        except Exception:
             return text  # 如果转换失败，返回原文本
 
 
