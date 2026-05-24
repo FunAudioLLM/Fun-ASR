@@ -230,7 +230,13 @@ We evaluated Fun-ASR against other state-of-the-art models on open-source benchm
 
 ## Remarkable Third-Party Work
 
-- vLLM (GPU) Deployment Best Practices: An accelerated implementation of Fun-ASR using vLLM. [Repository](https://github.com/yuekaizhang/Fun-ASR-vllm)
+- **vLLM Inference Engine (Native)**: Fun-ASR now has built-in vLLM support for high-throughput batch inference and real-time streaming. [Guide](docs/vllm_guide.md) | [Demo](demo_vllm.py)
+  ```bash
+  # Quick start with vLLM
+  from funasr import AutoModelVLLM
+  model = AutoModelVLLM(model="FunAudioLLM/Fun-ASR-Nano-2512", device="cuda", dtype="bf16")
+  result = model.generate(input="audio.wav", batch_size=32)
+  ```
 
 ## Citations
 

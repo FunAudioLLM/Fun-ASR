@@ -197,7 +197,13 @@ if __name__ == "__main__":
 
 ## 优秀三方工作
 
-- vLLM (GPU) 最佳部署实践: 使用 vLLM 实现对 Fun-ASR 的加速. [Repository](https://github.com/yuekaizhang/Fun-ASR-vllm)
+- **vLLM 推理引擎（原生支持）**: Fun-ASR 已内置 vLLM 高吞吐推理，支持离线批量和实时流式。[使用指南](docs/vllm_guide.md) | [示例](demo_vllm.py)
+  ```bash
+  # 快速开始
+  from funasr import AutoModelVLLM
+  model = AutoModelVLLM(model="FunAudioLLM/Fun-ASR-Nano-2512", device="cuda", dtype="bf16")
+  result = model.generate(input="audio.wav", batch_size=32)
+  ```
 
 ## Citations
 
