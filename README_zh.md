@@ -34,6 +34,7 @@ Fun-ASR 是通义实验室推出的端到端语音识别大模型，是基于数
 
 # 最新动态 🔥
 
+- 2026/05: **vLLM 推理引擎** — 原生高吞吐批量推理（3-5 倍加速）+ WebSocket 实时流式服务。参见 [vLLM 指南](docs/vllm_guide.md)。
 - 2026/05: Fun-ASR-Nano 现已支持说话人分离。配合 `vad_model` + `spk_model` + `punc_model` 使用，可获得带说话人标签的逐句结果。需从源码安装 FunASR：`pip install git+https://github.com/modelscope/FunASR.git`
 - 2025/12: [Fun-ASR-Nano-2512](https://modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512) 是一款基于数千万小时真实语音数据训练的端到端语音识别大模型。它支持低延迟实时转写，并涵盖 31 种语言识别功能。
 - 2024/7: [FunASR](https://github.com/modelscope/FunASR) 是一款功能全面的语音识别基础工具包，集成了多项核心功能，包括自动语音识别（ASR）、语音活动检测（VAD）、标点恢复、语言模型、说话人验证、说话人日志记录以及多说话人语音识别。
