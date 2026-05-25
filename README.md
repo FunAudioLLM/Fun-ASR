@@ -1,6 +1,6 @@
 # Fun-ASR
 
-「[简体中文](README_zh.md)」|「English」
+「[简体中文](README_zh.md)」|「English」|「[日本語](README_ja.md)」
 
 Fun-ASR is an end-to-end speech recognition large model launched by Tongyi Lab. It is trained on tens of millions of hours of real speech data, possessing powerful contextual understanding capabilities and industry adaptability. It supports low-latency real-time transcription and covers 31 languages. It excels in vertical domains such as education and finance, accurately recognizing professional terminology and industry expressions, effectively addressing challenges like "hallucination" generation and language confusion, achieving "clear hearing, understanding meaning, and accurate writing."
 
