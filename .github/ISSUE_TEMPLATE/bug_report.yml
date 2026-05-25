@@ -1,0 +1,51 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Thank you for reporting! Please fill in the details below."
+  - type: input
+    id: version
+    attributes:
+      label: FunASR Version
+      placeholder: "e.g., 1.3.3"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python Version
+      placeholder: "e.g., 3.10"
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - cuda (GPU)
+        - cpu
+        - mps (Apple Silicon)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened? What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Minimal code or commands to reproduce the issue
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Message / Traceback
+      render: shell
