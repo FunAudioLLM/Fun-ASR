@@ -23,6 +23,8 @@ Model Repository: [modelscope](https://www.modelscope.cn/models/FunAudioLLM/Fun-
 Online Experience:
 [ModelScope Community Space](https://modelscope.cn/studios/FunAudioLLM/Fun-ASR-Nano), [huggingface space](https://huggingface.co/spaces/FunAudioLLM/Fun-ASR-Nano)
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FunAudioLLM/Fun-ASR/blob/main/examples/colab/fun_asr_nano_quickstart.ipynb)
+
 </div>
 
 |                                                                           Model Name                                                                            |                                                                                                                                                                                                       Task Details                                                                                                                                                                                                       |         Training Data          | Parameters |
