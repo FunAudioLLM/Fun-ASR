@@ -253,11 +253,13 @@ for result in engine.streaming_generate("audio.wav", language="中文"):
 
 ### Performance
 
-| Config | Latency (5.6s audio) | Speedup |
-|--------|---------------------|---------|
-| PyTorch (baseline) | 0.89s | 1x |
-| vLLM 1-GPU | 0.30s | **3x** |
-| vLLM 2-GPU TP | ~0.20s | **4.5x** |
+| Method | Time (192min audio) | RTFx | CER |
+|--------|---------------------|------|-----|
+| PyTorch native | 589s | 19.6x | 8.94% |
+| **vLLM (ours)** | **29.3s** | **393.9x** | **8.91%** |
+| yuekaizhang vLLM | 42.7s | 273.0x | 17.07% |
+
+> **20.7x faster** than PyTorch with identical accuracy (CER diff < 0.05%)
 
 ### Install
 
