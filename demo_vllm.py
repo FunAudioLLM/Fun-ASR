@@ -17,9 +17,66 @@ Usage:
 
 import argparse
 import os
+import sys
 import time
 
 import torch
+
+
+def check_gpu_dtype_support(args):
+    if not torch.cuda.is_available():
+        return
+
+    if args.tensor_parallel_size > 1:
+        devices = [
+            torch.device(f"cuda:{idx}")
+            for idx in range(min(args.tensor_parallel_size, torch.cuda.device_count()))
+        ]
+    else:
+        devices = [torch.device("cuda:0")]
+
+    if args.device.startswith("cuda"):
+        audio_device = torch.device(args.device)
+        if audio_device not in devices:
+            devices.append(audio_device)
+
+    unsupported_gpus = []
+    for device in devices:
+        major, minor = torch.cuda.get_device_capability(device)
+        if (major, minor) >= (8, 0):
+            continue
+
+        gpu_name = torch.cuda.get_device_name(device)
+        capability = f"{major}.{minor}"
+        device_label = str(device) if device is not None else "cuda"
+        unsupported_gpus.append(
+            f"{device_label} ({gpu_name}, compute capability {capability})"
+        )
+
+    if not unsupported_gpus:
+        return
+
+    detected = "; ".join(unsupported_gpus)
+    if args.dtype == "bf16":
+        print(
+            f"Error: --dtype bf16 requires NVIDIA Ampere or newer GPUs "
+            f"(compute capability >= 8.0). Detected {detected}.",
+            file=sys.stderr,
+        )
+        print(
+            "Use --dtype fp16 to try vLLM on these GPU(s), or switch to the "
+            "AutoModel (PyTorch) path with demo1.py for pre-Ampere hardware.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    if args.dtype == "fp16":
+        print(
+            f"Warning: Detected {detected}. "
+            "fp16 mode on pre-Ampere GPUs may produce degraded or empty output; "
+            "use the AutoModel (PyTorch) path with demo1.py for more reliable "
+            "pre-Ampere inference.",
+            file=sys.stderr,
+        )
 
 
 def main():
@@ -46,6 +103,8 @@ def main():
     parser.add_argument("--batch-size", type=int, default=16, help="Batch size for inference")
     parser.add_argument("--output", type=str, default=None, help="Output file for results")
     args = parser.parse_args()
+
+    check_gpu_dtype_support(args)
 
     from funasr.models.fun_asr_nano.inference_vllm import FunASRNanoVLLM
 

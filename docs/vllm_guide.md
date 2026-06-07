@@ -675,6 +675,9 @@ It does not support long-segment inference. Use `dynamic_silence=False`.
 **Q: Performance impact of SPK?**
 RTFx drops from 102 to 46. CER is unchanged. Disabled by default.
 
+**Q: I get empty output on an older GPU (V100, P100)?**
+The vLLM path is intended for NVIDIA Ampere or newer GPUs (compute capability >= 8.0). `bf16` requires Ampere+, and `fp16` on pre-Ampere GPUs may produce degraded or empty output. For V100, P100, and other pre-Ampere hardware, use the AutoModel (PyTorch) path with `demo1.py` / `demo2.py`.
+
 **Q: Entry points for custom development?**
 Offline: `serve_vllm.process_audio()` / `FunASRNanoVLLM.generate()`
 Streaming: `serve_realtime_ws.RealtimeASRSession`
