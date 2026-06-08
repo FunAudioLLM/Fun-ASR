@@ -1,11 +1,15 @@
 # Fun-ASR-Nano 实时 WebSocket 服务 — 快速上手
 
-> 完整文档请参见：[FunASR vLLM 推理引擎指南](../../../../docs/vllm_guide.md)
+> 完整文档请参见：[FunASR vLLM 推理引擎指南](https://github.com/modelscope/FunASR/blob/main/docs/vllm_guide.md)
+
+> **注意**: `serve_realtime_ws.py` 等服务脚本位于 [FunASR 主仓库](https://github.com/modelscope/FunASR/tree/main/examples/industrial_data_pretraining/fun_asr_nano)，需要先 clone FunASR。
 
 ## 30 秒启动
 
 ```bash
-cd examples/industrial_data_pretraining/fun_asr_nano
+# Clone FunASR main repo (contains the server scripts)
+git clone https://github.com/modelscope/FunASR.git
+cd FunASR/examples/industrial_data_pretraining/fun_asr_nano
 
 # 安装依赖
 pip install -r requirements.txt
@@ -60,4 +64,4 @@ ssh -L 10095:localhost:10095 <server>
 
 ## 详细文档
 
-- [FunASR vLLM 推理引擎指南](../../../../docs/vllm_guide.md) — 完整文档（离线/流式/WebSocket/API/FAQ）
+- [FunASR vLLM 推理引擎指南](https://github.com/modelscope/FunASR/blob/main/docs/vllm_guide.md) — 完整文档（离线/流式/WebSocket/API/FAQ）
