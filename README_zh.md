@@ -63,6 +63,7 @@ pip install -r requirements.txt
 # TODO
 
 - [x] 支持返回时间戳
+  > **已知限制：** 当前开源版本发布的 Fun-ASR-Nano `model.pt` 模型检查点不包含已训练的 `ctc_decoder.*` / `ctc.*` 权重，因此可能会返回时间戳结果，但结果不可靠。需要准确的字级时间戳时，请改用 Paraformer，例如 `AutoModel(model="paraformer-zh", vad_model="fsmn-vad", ...)`。详情见 [issue #106](https://github.com/FunAudioLLM/Fun-ASR/issues/106)。
 - [ ] 支持区分说话人识别
 - [x] 支持模型训练
 
