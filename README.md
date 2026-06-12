@@ -65,6 +65,7 @@ pip install -r requirements.txt
 # TODO
 
 - [x] Support returning timestamps
+  > **Known limitation:** In the current open-source release, the released Fun-ASR-Nano `model.pt` checkpoint does not include trained `ctc_decoder.*` / `ctc.*` weights, so timestamp output may be returned but is not reliable. For accurate character-level timestamps, use Paraformer instead, for example `AutoModel(model="paraformer-zh", vad_model="fsmn-vad", ...)`. See [issue #106](https://github.com/FunAudioLLM/Fun-ASR/issues/106).
 - [x] Support speaker diarization
 - [x] Support model training
 
