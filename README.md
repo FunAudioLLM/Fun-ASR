@@ -256,13 +256,12 @@ for result in engine.streaming_generate("audio.wav", language="中文"):
 
 ### Performance
 
-| Method | Time (192min audio) | RTFx | CER |
+| Method | Time (184 files, 11,541s) | RTFx | CER |
 |--------|---------------------|------|-----|
-| PyTorch native | 589s | 19.6x | 8.94% |
-| **vLLM (ours)** | **29.3s** | **393.9x** | **8.91%** |
-| yuekaizhang vLLM | 42.7s | 273.0x | 17.07% |
+| PyTorch native | 550s | 21x | 8.06% |
+| **vLLM (ours)** | **34s** | **340x** | **8.20%** |
 
-> **20.7x faster** than PyTorch with identical accuracy (CER diff < 0.05%)
+> **16x faster** than PyTorch with nearly identical accuracy (CER diff < 0.2%)
 
 ### Install
 
