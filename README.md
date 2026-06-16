@@ -124,6 +124,26 @@ if __name__ == "__main__":
     main()
 ```
 
+### Faster batch transcription (no vLLM)
+
+When transcribing long audio or many files on the `funasr` (PyTorch) path, pass
+`batch_size_s` to batch the VAD segments through the LLM decoder together. This
+greatly improves GPU utilization:
+
+```python
+res = model.generate(
+    input=[wav_path],
+    cache={},
+    language="中文",
+    itn=True,
+    batch_size_s=120,   # batch VAD segments up to ~120s of audio per LLM call
+)
+```
+
+On Fun-ASR-Nano-2512 (184 Chinese files / 11,539 s, single H100) this is about
+**1.6x faster** than the default per-segment decoding (RTFx 19.8 -> 31.8) with no
+loss in accuracy. For the highest throughput, use the vLLM path below.
+
 ### Speaker Diarization
 
 ```python
