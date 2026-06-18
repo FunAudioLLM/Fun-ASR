@@ -142,3 +142,7 @@ export_encoder_gguf.py   export the audio encoder + adaptor to GGUF
 ## Roadmap
 - True FSMN-VAD segmentation (replace fixed windows; closes the last ~1.3% CER).
 - Arbitrary WAV formats / resampling; encoder Q8 quantization; single packaged GGUF.
+
+## Further reading
+
+See [DESIGN.md](DESIGN.md) for the full system design — architecture, the shared SAN-M encoder, GGUF weight format, numerical-fidelity and validation methodology, design trade-offs, and gotchas.
