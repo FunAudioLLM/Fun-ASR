@@ -73,6 +73,8 @@ pip install -r requirements.txt
 
 ## Inference
 
+> **CPU / edge (no GPU, no Python):** run Fun-ASR-Nano as a single self-contained binary via **llama.cpp / GGUF** — like whisper.cpp. See [runtime/llama.cpp/](runtime/llama.cpp/).
+
 ### Using funasr for inference
 
 ```python
