@@ -83,6 +83,17 @@ Expected output (one of the benchmark clips):
 [done] 7.40s ; chunk=15s
 ```
 
+**Long audio — built-in FSMN-VAD (recommended, no Python front end):**
+```bash
+python runtime/llama.cpp/export_vad_gguf.py \
+    --model_pt <fsmn-vad>/model.pt --mvn <fsmn-vad>/am.mvn --out fsmn-vad.gguf
+build/bin/llama-funasr-cli --enc funasr-encoder.gguf -m qwen3-0.6b-q8_0.gguf \
+    -a long.wav --vad fsmn-vad.gguf            # segments internally (replaces --chunk)
+```
+`--vad` runs a native ggml FSMN-VAD inside the binary (segment boundaries within ~10 ms
+of the PyTorch front end) and decodes each speech segment — closing the fixed-window gap
+(full-184 micro-CER **8.30**, vs 9.5 % with `--chunk 15`). See [BENCHMARKS.md](BENCHMARKS.md).
+
 ## Models & sizes
 
 | file | dtype | size |
@@ -109,9 +120,10 @@ Validated against the PyTorch reference on the 184-file benchmark:
 
 ## Tips & gotchas
 
-- **Use `--chunk 15`** for long audio. Decoding a whole 60 s clip in one segment is
-  out-of-distribution and makes greedy decoding loop; 15 s windows fix it
-  (micro-CER 29% → 9.5%).
+- **Use `--vad fsmn-vad.gguf`** for long audio (built-in FSMN-VAD, best CER); `--chunk 15`
+  is the simpler fixed-window fallback. Decoding a whole 60 s clip in one segment is
+  out-of-distribution and makes greedy decoding loop; VAD/chunking fix it
+  (micro-CER 29% → 8.3% with VAD, 9.5% with 15 s windows).
 - **Low-frame-rate truncation** is required: only the first `fake_token_len`
   adaptor frames are real audio tokens. The CLI does this automatically; feeding
   all frames makes the LLM repeat.
@@ -137,10 +149,12 @@ funasr-cli/        integrated binary: WAV → transcription
 funasr-encoder/    encoder+adaptor only (ggml) — validation/debugging
 funasr-embd/       LLM decode from precomputed embeds — validation/debugging
 export_encoder_gguf.py   export the audio encoder + adaptor to GGUF
+funasr-vad/        built-in FSMN-VAD tool + --vad library (funasr-common/funasr_vad.h)
+export_vad_gguf.py export the FSMN-VAD encoder + CMVN to GGUF
 ```
 
 ## Roadmap
-- True FSMN-VAD segmentation (replace fixed windows; closes the last ~1.3% CER).
+- ✅ **Built-in FSMN-VAD segmentation** (`--vad`, native ggml) — done; bare binary 8.30 micro-CER.
 - Arbitrary WAV formats / resampling; encoder Q8 quantization; single packaged GGUF.
 
 ## Further reading
