@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
 # 微调
 
-详情请参考 [docs/finetune_zh.md](docs/finetune.md)
+详情请参考 [docs/finetune_zh.md](docs/finetune_zh.md)
 
 # 性能评测 📝
 
