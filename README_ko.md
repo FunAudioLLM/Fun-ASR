@@ -94,7 +94,7 @@ result = model.generate(input=["meeting.wav"], batch_size=1)
 for item in result:
     if 'sentence_info' in item:
         for sent in item['sentence_info']:
-            print(f"[화자{sent['spk']}] {sent['text']}")
+            print(f"[화자{sent['spk']}] {sent['sentence']}")
 ```
 
 <a name="성능-평가"></a>

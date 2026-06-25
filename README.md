@@ -181,7 +181,7 @@ def main():
 
     # Per-sentence results with speaker labels
     for sent in res[0]["sentence_info"]:
-        print(f"Speaker {sent['spk']}: [{sent['start']}ms - {sent['end']}ms] {sent['text']}")
+        print(f"Speaker {sent['spk']}: [{sent['start']}ms - {sent['end']}ms] {sent['sentence']}")
 
 
 if __name__ == "__main__":

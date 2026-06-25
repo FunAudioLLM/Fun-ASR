@@ -95,7 +95,7 @@ result = model.generate(input=["meeting.wav"], batch_size=1)
 for item in result:
     if 'sentence_info' in item:
         for sent in item['sentence_info']:
-            print(f"[話者{sent['spk']}] {sent['text']}")
+            print(f"[話者{sent['spk']}] {sent['sentence']}")
 ```
 
 ## vLLM 高速推論
