@@ -23,6 +23,8 @@ Fun-ASR 是通义实验室推出的端到端语音识别大模型，是基于数
 在线体验：
 [魔搭社区创空间](https://modelscope.cn/studios/FunAudioLLM/Fun-ASR-Nano)，[huggingface space](https://huggingface.co/spaces/FunAudioLLM/Fun-ASR-Nano)
 
+[可运行示例脚本](examples/README.md) 覆盖快速上手、直接推理、说话人分离、vLLM 批量推理和 Streaming SDK。
+
 </div>
 
 |                                                                              模型                                                                               |                                                                                                                                                    介绍                                                                                                                                                    |  训练数据  | 参数 |
@@ -199,13 +201,9 @@ if __name__ == "__main__":
 
 ## 优秀三方工作
 
-- **vLLM 推理引擎（原生支持）**: Fun-ASR 已内置 vLLM 高吞吐推理，支持离线批量和实时流式。[使用指南](docs/vllm_guide.md) | [示例](demo_vllm.py)
-  ```bash
-  # 快速开始
-  from funasr import AutoModelVLLM
-  model = AutoModelVLLM(model="FunAudioLLM/Fun-ASR-Nano-2512", device="cuda", dtype="bf16")
-  result = model.generate(input="audio.wav", batch_size=32)
-  ```
+- **[Fun-ASR-vllm](https://github.com/yuekaizhang/Fun-ASR-vllm)**（[@yuekaizhang](https://github.com/yuekaizhang)）— 社区实现的 Fun-ASR vLLM 方案，支持批量推理和 NVIDIA Triton Inference Server 高并发部署。参见 [#34](https://github.com/FunAudioLLM/Fun-ASR/issues/34)。
+
+> Fun-ASR 也已内置原生 vLLM 支持，包括 `AutoModelVLLM` 批量推理、Streaming SDK 和 WebSocket 服务；请参考 [vLLM 中文指南](docs/vllm_guide_zh.md) 与 [可运行示例脚本](examples/README.md)。
 
 ## Citations
 
