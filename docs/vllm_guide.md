@@ -542,8 +542,18 @@ Client (microphone / audio stream)     serve_realtime_ws.py
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python examples/industrial_data_pretraining/fun_asr_nano/serve_realtime_ws.py \
-    --port 10095 --language 中文 --hotword-file hotword_list
+    --port 10095 --language 中文 --hotword-file hotword_list \
+    --ws-ping-interval 30 --ws-ping-timeout 120
 ```
+
+For long meetings or connections routed through Nginx/load balancers, tune the WebSocket keepalive settings to stay below the idle timeout enforced by the gateway:
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--ws-ping-interval` | `30.0` | Seconds between WebSocket protocol pings; set `0` to disable protocol pings |
+| `--ws-ping-timeout` | `120.0` | Seconds to wait for a pong before closing; set `0` to disable the ping timeout |
+| `--ws-close-timeout` | `10.0` | Seconds to wait for the WebSocket close handshake |
+| `--ws-max-size` | `10485760` | Maximum incoming WebSocket message size in bytes |
 
 ### 6.3 WebSocket Protocol
 

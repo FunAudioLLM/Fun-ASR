@@ -493,14 +493,27 @@ async def handle_client(websocket, args):
         logger.error(f"Error: {e}", exc_info=True)
 
 
+def _positive_or_none(value):
+    return None if value <= 0 else value
+
+
+def build_websocket_serve_kwargs(args):
+    return {
+        "ping_interval": _positive_or_none(args.ws_ping_interval),
+        "ping_timeout": _positive_or_none(args.ws_ping_timeout),
+        "close_timeout": args.ws_close_timeout,
+        "max_size": args.ws_max_size,
+    }
+
+
 async def main(args):
     load_models(args)
+    serve_kwargs = build_websocket_serve_kwargs(args)
     logger.info(f"Server on ws://0.0.0.0:{args.port}")
+    logger.info(f"WebSocket options: {serve_kwargs}")
     async with websockets.serve(
         lambda ws: handle_client(ws, args), "0.0.0.0", args.port,
-        ping_interval=args.ws_ping_interval,
-        ping_timeout=args.ws_ping_timeout,
-        max_size=10*1024*1024,
+        **serve_kwargs,
     ):
         await asyncio.Future()
 
@@ -515,8 +528,14 @@ if __name__ == "__main__":
     parser.add_argument("--no-context", dest="use_context", action="store_false")
     parser.add_argument("--decode-interval", type=float, default=0.48)
     parser.add_argument("--disable-spk", action="store_true", help="Disable streaming speaker diarization")
-    parser.add_argument("--ws-ping-interval", type=float, default=30.0, help="WebSocket ping interval in seconds")
-    parser.add_argument("--ws-ping-timeout", type=float, default=120.0, help="WebSocket ping timeout in seconds")
+    parser.add_argument("--ws-ping-interval", type=float, default=30.0,
+                        help="WebSocket ping interval in seconds; <=0 disables protocol pings")
+    parser.add_argument("--ws-ping-timeout", type=float, default=120.0,
+                        help="WebSocket ping timeout in seconds; <=0 disables ping timeout")
+    parser.add_argument("--ws-close-timeout", type=float, default=10.0,
+                        help="WebSocket close handshake timeout in seconds")
+    parser.add_argument("--ws-max-size", type=int, default=10 * 1024 * 1024,
+                        help="Maximum WebSocket message size in bytes")
     parser.add_argument("--hotword-file", type=str, default="热词列表")
     parser.add_argument("--language", type=str, default=None, help="Language hint (e.g. 中文, English, 日本語)")
     parser.add_argument("--dtype", type=str, default="bf16", choices=["bf16", "fp16", "fp32"])

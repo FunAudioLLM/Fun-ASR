@@ -544,8 +544,18 @@ asyncio.run(offline_ws("audio.wav"))
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python examples/industrial_data_pretraining/fun_asr_nano/serve_realtime_ws.py \
-    --port 10095 --language 中文 --hotword-file 热词列表
+    --port 10095 --language 中文 --hotword-file 热词列表 \
+    --ws-ping-interval 30 --ws-ping-timeout 120
 ```
+
+长时间会议、访谈或经过 Nginx/负载均衡访问时，请按网关的空闲回收时间调整 WebSocket 保活参数：
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--ws-ping-interval` | `30.0` | WebSocket 协议 ping 间隔秒数；设为 `0` 可关闭协议层 ping |
+| `--ws-ping-timeout` | `120.0` | 等待 pong 的超时时间秒数；设为 `0` 可关闭 ping timeout |
+| `--ws-close-timeout` | `10.0` | WebSocket close 握手等待秒数 |
+| `--ws-max-size` | `10485760` | 单条 WebSocket 入站消息最大字节数 |
 
 ### 4.3 WebSocket 协议
 
