@@ -429,8 +429,12 @@ def load_models(args):
         logger.info("Loading VAD: fsmn-vad (streaming)")
         _vad_model = AutoModel(model="fsmn-vad", device=args.device, disable_update=True)
 
-        logger.info("Loading SPK: eres2netv2")
-        _spk_model = AutoModel(model="iic/speech_eres2netv2_sv_zh-cn_16k-common", device=args.device, disable_update=True)
+        if getattr(args, "disable_spk", False):
+            logger.info("SPK disabled by --disable-spk")
+            _spk_model = None
+        else:
+            logger.info("Loading SPK: eres2netv2")
+            _spk_model = AutoModel(model="iic/speech_eres2netv2_sv_zh-cn_16k-common", device=args.device, disable_update=True)
 
         logger.info("All models ready!")
     return _vllm_engine, _asr_kwargs, _vad_model, _spk_model
@@ -439,7 +443,7 @@ def load_models(args):
 async def handle_client(websocket, args):
     vllm_engine, asr_kwargs, vad_model, spk_model = load_models(args)
     vad = DynamicStreamingVAD(vad_model)
-    spk_tracker = HybridSpeakerTracker(spk_model, args.device)
+    spk_tracker = None if args.disable_spk else HybridSpeakerTracker(spk_model, args.device)
     session = RealtimeASRSession(vllm_engine, asr_kwargs, vad, spk_tracker=spk_tracker)
     logger.info(f"Client connected: {websocket.remote_address}")
 
@@ -470,16 +474,16 @@ async def handle_client(websocket, args):
                     logger.info(f"Language set: {lang}")
                 elif cmd.upper() == "STOP":
                     if session.is_active and len(session.audio_buffer) > 0:
-                        result = session.decode(is_final=True)
+                        result = await asyncio.to_thread(session.decode, is_final=True)
                         await websocket.send(json.dumps(result))
                         logger.info(f"Final: {len(result['sentences'])} sentences")
                         session.is_active = False
                     await websocket.send(json.dumps({"event": "stopped"}))
             elif isinstance(message, bytes) and session.is_active:
-                session.add_audio(message)
+                await asyncio.to_thread(session.add_audio, message)
                 now = time.time()
                 if now - last_decode_time >= decode_interval and session.should_decode():
-                    result = session.decode(is_final=False)
+                    result = await asyncio.to_thread(session.decode, is_final=False)
                     await websocket.send(json.dumps(result))
                     last_decode_time = now
 
@@ -494,6 +498,8 @@ async def main(args):
     logger.info(f"Server on ws://0.0.0.0:{args.port}")
     async with websockets.serve(
         lambda ws: handle_client(ws, args), "0.0.0.0", args.port,
+        ping_interval=args.ws_ping_interval,
+        ping_timeout=args.ws_ping_timeout,
         max_size=10*1024*1024,
     ):
         await asyncio.Future()
@@ -508,6 +514,9 @@ if __name__ == "__main__":
     parser.add_argument("--use-context", action="store_true", default=True)
     parser.add_argument("--no-context", dest="use_context", action="store_false")
     parser.add_argument("--decode-interval", type=float, default=0.48)
+    parser.add_argument("--disable-spk", action="store_true", help="Disable streaming speaker diarization")
+    parser.add_argument("--ws-ping-interval", type=float, default=30.0, help="WebSocket ping interval in seconds")
+    parser.add_argument("--ws-ping-timeout", type=float, default=120.0, help="WebSocket ping timeout in seconds")
     parser.add_argument("--hotword-file", type=str, default="热词列表")
     parser.add_argument("--language", type=str, default=None, help="Language hint (e.g. 中文, English, 日本語)")
     parser.add_argument("--dtype", type=str, default="bf16", choices=["bf16", "fp16", "fp32"])
