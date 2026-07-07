@@ -53,6 +53,12 @@ llama-funasr-cli --enc funasr-gguf/funasr-encoder-f16.gguf -m funasr-gguf/qwen3-
 ```
 Pre-converted GGUF: [FunAudioLLM/Fun-ASR-Nano-GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [fsmn-vad-GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF). Or convert yourself: `python convert-funasr-to-gguf.py nano-encoder --wtype f16`.
 
+`fsmn-vad.gguf` is intentionally published in the separate [FunAudioLLM/fsmn-vad-GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF) repo so Nano, SenseVoice, and Paraformer can share the same VAD file. The `nano` command above downloads it automatically; if you are browsing the Hugging Face UI, open the VAD repo directly, or fetch it with:
+
+```bash
+hf download FunAudioLLM/fsmn-vad-GGUF --include "*.gguf" --local-dir funasr-gguf
+```
+
 ## Build (standalone, CI-friendly)
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release      # fetches pinned llama.cpp; static, self-contained

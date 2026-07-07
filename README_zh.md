@@ -36,6 +36,7 @@ Fun-ASR 是通义实验室推出的端到端语音识别大模型，是基于数
 
 # 最新动态 🔥
 
+- 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — 支持在 CPU/边缘设备上以单个自包含二进制运行（类似 whisper.cpp），内置 VAD，运行时无需 Python。量化模型最小约 484 MB。[runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](../../releases) · [Nano GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF)
 - 2026/05: **vLLM 推理引擎** — 原生高吞吐批量推理（3-5 倍加速）+ WebSocket 实时流式服务。参见 [vLLM 指南](docs/vllm_guide.md)。
 - 2026/05: Fun-ASR-Nano 现已支持说话人分离。配合 `vad_model` + `spk_model` + `punc_model` 使用，可获得带说话人标签的逐句结果。需从源码安装 FunASR：`pip install git+https://github.com/modelscope/FunASR.git`
 - 2025/12: [Fun-ASR-Nano-2512](https://modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512) 是一款基于数千万小时真实语音数据训练的端到端语音识别大模型。它支持低延迟实时转写，并涵盖 31 种语言识别功能。
@@ -72,6 +73,23 @@ pip install -r requirements.txt
 # 用法 🛠️
 
 ## 推理
+
+### CPU / 边缘设备运行 — llama.cpp / GGUF（无 GPU、无 Python 运行时）
+
+Fun-ASR-Nano 可作为单个自包含二进制运行，类似 [whisper.cpp](https://github.com/ggml-org/whisper.cpp)，内置 FSMN-VAD，适合离线 CPU/边缘部署。
+
+```bash
+bash runtime/llama.cpp/download-funasr-model.sh nano ./gguf
+llama-funasr-cli --enc ./gguf/funasr-encoder-f16.gguf -m ./gguf/qwen3-0.6b-q8_0.gguf -a audio.wav --vad ./gguf/fsmn-vad.gguf
+```
+
+`fsmn-vad.gguf` 独立发布在共享的 [FunAudioLLM/fsmn-vad-GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF) 仓库中，不在 Nano GGUF 仓库内。上面的 `nano` 下载脚本会自动拉取；如果只想单独下载 VAD 文件，可使用：
+
+```bash
+hf download FunAudioLLM/fsmn-vad-GGUF --include "*.gguf" --local-dir ./gguf
+```
+
+**预编译二进制：** [Releases](../../releases) · **下载与快速开始：** [funasr.com/llama-cpp](https://www.funasr.com/llama-cpp.html) · **GGUF：** [Nano encoder/LLM](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF) · **文档与 benchmark：** [runtime/llama.cpp/](./runtime/llama.cpp/)
 
 ### 使用 funasr 推理
 
