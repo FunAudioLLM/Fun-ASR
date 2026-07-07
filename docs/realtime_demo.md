@@ -16,8 +16,12 @@ pip install -r requirements.txt
 pip install vllm>=0.12.0
 
 # 启动服务
-CUDA_VISIBLE_DEVICES=0 python serve_realtime_ws.py --port 10095 --language 中文
+CUDA_VISIBLE_DEVICES=0 python serve_realtime_ws.py \
+    --port 10095 --language 中文 \
+    --ws-ping-interval 30 --ws-ping-timeout 120
 ```
+
+长时间会议、访谈或经过 Nginx/负载均衡访问时，可按网络空闲回收时间调整 `--ws-ping-interval` 与 `--ws-ping-timeout`。如果外部网关已经负责心跳和重连，可将两者设为 `0` 关闭 WebSocket 协议层 ping。
 
 ## 客户端
 

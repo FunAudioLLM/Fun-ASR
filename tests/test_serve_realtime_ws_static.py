@@ -14,8 +14,23 @@ def test_realtime_server_exposes_long_session_controls():
     assert 'parser.add_argument("--disable-spk"' in source
     assert 'parser.add_argument("--ws-ping-interval"' in source
     assert 'parser.add_argument("--ws-ping-timeout"' in source
-    assert "ping_interval=args.ws_ping_interval" in source
-    assert "ping_timeout=args.ws_ping_timeout" in source
+    assert 'parser.add_argument("--ws-close-timeout"' in source
+    assert 'parser.add_argument("--ws-max-size"' in source
+    assert "build_websocket_serve_kwargs(args)" in source
+    assert "ping_interval" in source
+    assert "ping_timeout" in source
+    assert "close_timeout" in source
+    assert "max_size" in source
+
+
+def test_realtime_server_allows_disabling_websocket_pings():
+    source = _source_text()
+
+    assert "def _positive_or_none" in source
+    assert "return None if value <= 0 else value" in source
+    assert "_positive_or_none(args.ws_ping_interval)" in source
+    assert "_positive_or_none(args.ws_ping_timeout)" in source
+    assert "<=0 disables" in source
 
 
 def test_realtime_server_keeps_heavy_session_work_off_event_loop():
