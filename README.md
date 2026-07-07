@@ -38,7 +38,7 @@ Online Experience:
 
 # What's New 🔥
 
-- 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — run it on CPU/edge as a single self-contained binary (whisper.cpp-style), built-in VAD, no Python at runtime. Quantized models down to ~484 MB. [runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](../../releases) · [GGUF on Hugging Face](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF)
+- 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — run it on CPU/edge as a single self-contained binary (whisper.cpp-style), built-in VAD, no Python at runtime. Quantized models down to ~484 MB. [runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](../../releases) · [Nano GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF)
 - 2026/05: **vLLM Inference Engine** — native high-throughput batch (3-5x faster) + WebSocket real-time streaming service. See [vLLM Guide](docs/vllm_guide.md).
 - 2026/05: Fun-ASR-Nano now supports speaker diarization. Use with `vad_model` + `spk_model` + `punc_model` to get per-sentence speaker labels. Requires installing FunASR from source: `pip install git+https://github.com/modelscope/FunASR.git`
 - 2025/12: [Fun-ASR-Nano-2512](https://modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512) is an end-to-end speech recognition large model trained on tens of millions of hours real speech data. It supports low-latency real-time transcription and covers 31 languages.
@@ -81,11 +81,17 @@ pip install -r requirements.txt
 Run Fun-ASR-Nano as a **single self-contained binary** — like [whisper.cpp](https://github.com/ggml-org/whisper.cpp) but for FunASR, with strong Chinese accuracy. Built-in FSMN-VAD, no Python at runtime.
 
 ```bash
-bash download-funasr-model.sh nano ./gguf
+bash runtime/llama.cpp/download-funasr-model.sh nano ./gguf
 llama-funasr-cli --enc ./gguf/funasr-encoder-f16.gguf -m ./gguf/qwen3-0.6b-q8_0.gguf -a audio.wav --vad ./gguf/fsmn-vad.gguf
 ```
 
-**Prebuilt binaries:** [Releases](../../releases) · **Download & quickstart:** [funasr.com/llama-cpp](https://www.funasr.com/llama-cpp.html) · **GGUF:** [Hugging Face](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · **Docs & benchmarks:** [runtime/llama.cpp/](./runtime/llama.cpp/)
+`fsmn-vad.gguf` is hosted in the shared [FunAudioLLM/fsmn-vad-GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF) repo, not inside the Nano GGUF repo. The `nano` downloader above fetches it automatically; to fetch only VAD from the Hugging Face UI/CLI, use:
+
+```bash
+hf download FunAudioLLM/fsmn-vad-GGUF --include "*.gguf" --local-dir ./gguf
+```
+
+**Prebuilt binaries:** [Releases](../../releases) · **Download & quickstart:** [funasr.com/llama-cpp](https://www.funasr.com/llama-cpp.html) · **GGUF:** [Nano encoder/LLM](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF) · **Docs & benchmarks:** [runtime/llama.cpp/](./runtime/llama.cpp/)
 
 ### Using funasr for inference
 
