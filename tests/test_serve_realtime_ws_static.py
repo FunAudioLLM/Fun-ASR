@@ -12,6 +12,7 @@ def test_realtime_server_exposes_long_session_controls():
     source = _source_text()
 
     assert 'parser.add_argument("--disable-spk"' in source
+    assert '"--partial-window-sec"' in source
     assert 'parser.add_argument("--ws-ping-interval"' in source
     assert 'parser.add_argument("--ws-ping-timeout"' in source
     assert 'parser.add_argument("--ws-close-timeout"' in source
@@ -37,6 +38,6 @@ def test_realtime_server_keeps_heavy_session_work_off_event_loop():
     source = _source_text()
 
     assert "None if args.disable_spk else HybridSpeakerTracker" in source
-    assert "await asyncio.to_thread(session.add_audio, message)" in source
-    assert "await asyncio.to_thread(session.decode, is_final=True)" in source
-    assert "await asyncio.to_thread(session.decode, is_final=False)" in source
+    assert "await run_session_work(args, session.add_audio, message)" in source
+    assert "await run_session_work(args, session.decode, is_final=True)" in source
+    assert "await run_session_work(args, session.decode, is_final=False)" in source
