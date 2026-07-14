@@ -386,6 +386,11 @@ Fun-ASR-Nano is part of the **FunAudioLLM** family:
   </picture>
 </a>
 
+## License
+
+- Source code in this repository is licensed under the [Apache License 2.0](./LICENSE).
+- Model weights are distributed separately and follow the license metadata on their model cards. The official [Fun-ASR-Nano](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-2512) and [Fun-ASR-MLT-Nano](https://huggingface.co/FunAudioLLM/Fun-ASR-MLT-Nano-2512) cards currently list Apache-2.0; review the card for the specific artifact you download.
+
 ## Citations
 
 ```bibtex
