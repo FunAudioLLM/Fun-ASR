@@ -2,7 +2,7 @@
 
 「[简体中文](README_zh.md)」|「English」|「[日本語](README_ja.md)」|「[한국어](README_ko.md)」
 
-Fun-ASR is an end-to-end speech recognition large model launched by Tongyi Lab. It is trained on tens of millions of hours of real speech data, possessing powerful contextual understanding capabilities and industry adaptability. It supports low-latency real-time transcription and covers 31 languages. It excels in vertical domains such as education and finance, accurately recognizing professional terminology and industry expressions, effectively addressing challenges like "hallucination" generation and language confusion, achieving "clear hearing, understanding meaning, and accurate writing."
+Fun-ASR is a family of end-to-end speech recognition models from Tongyi Lab. Checkpoint capabilities are distinct: Fun-ASR-Nano-2512 is trained on tens of millions of hours of speech and supports Chinese, English, Japanese, and Chinese dialects and accents; Fun-ASR-MLT-Nano-2512 is an 800M multilingual checkpoint trained on hundreds of thousands of hours and supports 31 languages. Both checkpoints integrate with FunASR for inference and serving.
 
 <div align="center">
 <img src="images/funasr-v2.png">
@@ -18,7 +18,7 @@ Fun-ASR is an end-to-end speech recognition large model launched by Tongyi Lab. 
 
 </h4>
 
-Model Repository: [modelscope](https://www.modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512), [huggingface](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-2512)
+Model repositories: **Fun-ASR-Nano** ([ModelScope](https://www.modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512), [Hugging Face](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-2512)) · **Fun-ASR-MLT-Nano** ([ModelScope](https://www.modelscope.cn/models/FunAudioLLM/Fun-ASR-MLT-Nano-2512), [Hugging Face](https://huggingface.co/FunAudioLLM/Fun-ASR-MLT-Nano-2512))
 
 Online Experience:
 [ModelScope Community Space](https://modelscope.cn/studios/FunAudioLLM/Fun-ASR-Nano), [huggingface space](https://huggingface.co/spaces/FunAudioLLM/Fun-ASR-Nano)
@@ -32,7 +32,7 @@ Online Experience:
 |                                                                           Model Name                                                                            |                                                                                                                                                                                                       Task Details                                                                                                                                                                                                       |         Training Data          | Parameters |
 | :-------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------: | :--------: |
 |       Fun-ASR-Nano <br> ([⭐](https://www.modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512) [🤗](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-2512))       | Speech recognition supports Chinese, English, and Japanese. Chinese includes support for 7 dialects (Wu, Cantonese, Min, Hakka, Gan, Xiang, Jin) and 26 regional accents (Henan, Shanxi, Hubei, Sichuan, Chongqing, Yunnan, Guizhou, Guangdong, Guangxi and more than 20 other regions). English and Japanese cover multiple regional accents. Additional features include lyric recognition and rap speech recognition. |   Tens of millions of hours    |    800M    |
-| Fun-ASR-MLT-Nano <br> ([⭐](https://www.modelscope.cn/models/FunAudioLLM/Fun-ASR-MLT-Nano-2512) [🤗](https://huggingface.co/FunAudioLLM/Fun-ASR-MLT-Nano-2512)) |                                    Speech recognition supports Korean, Vietnamese, Indonesian, Thai, Malay, Filipino, Arabic, Hindi, Bulgarian, Croatian, Czech, Danish, Dutch, Estonian, Finnish, Greek, Hungarian, Irish, Latvian, Lithuanian, Maltese, Polish, Portuguese, Romanian, Slovak, Slovenian, Swedish, and 31 languages in total.                                    | Hundreds of thousands of hours |    800M    |
+| Fun-ASR-MLT-Nano <br> ([⭐](https://www.modelscope.cn/models/FunAudioLLM/Fun-ASR-MLT-Nano-2512) [🤗](https://huggingface.co/FunAudioLLM/Fun-ASR-MLT-Nano-2512)) | Speech recognition supports Chinese, English, Cantonese, Japanese, Korean, Vietnamese, Indonesian, Thai, Malay, Filipino, Arabic, Hindi, Bulgarian, Croatian, Czech, Danish, Dutch, Estonian, Finnish, Greek, Hungarian, Irish, Latvian, Lithuanian, Maltese, Polish, Portuguese, Romanian, Slovak, Slovenian, and Swedish: 31 languages in total. | Hundreds of thousands of hours |    800M    |
 
 <a name="What's News"></a>
 
@@ -40,19 +40,19 @@ Online Experience:
 
 - 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — run it on CPU/edge as a single self-contained binary (whisper.cpp-style), built-in VAD, no Python at runtime. Quantized models down to ~484 MB. [runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](../../releases) · [Nano GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF)
 - 2026/05: **vLLM Inference Engine** — native high-throughput batch (3-5x faster) + WebSocket real-time streaming service. See [vLLM Guide](docs/vllm_guide.md).
-- 2026/05: Fun-ASR-Nano now supports speaker diarization. Use with `vad_model` + `spk_model` + `punc_model` to get per-sentence speaker labels. Requires installing FunASR from source: `pip install git+https://github.com/modelscope/FunASR.git`
-- 2025/12: [Fun-ASR-Nano-2512](https://modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512) is an end-to-end speech recognition large model trained on tens of millions of hours real speech data. It supports low-latency real-time transcription and covers 31 languages.
+- 2026/05: The FunASR pipeline can combine Fun-ASR-Nano with separate FSMN-VAD, CAM++, and punctuation models to produce per-sentence speaker labels. Diarization is not a native output of the Nano checkpoint. Requires installing FunASR from source: `pip install git+https://github.com/modelscope/FunASR.git`
+- 2025/12: [Fun-ASR-Nano-2512](https://modelscope.cn/models/FunAudioLLM/Fun-ASR-Nano-2512) was released for Chinese, English, Japanese, and Chinese dialects and accents. For 31-language recognition, use the separate [Fun-ASR-MLT-Nano-2512](https://modelscope.cn/models/FunAudioLLM/Fun-ASR-MLT-Nano-2512) checkpoint.
 - 2024/7: [FunASR](https://github.com/modelscope/FunASR) is a fundamental speech recognition toolkit that offers a variety of features, including speech recognition (ASR), Voice Activity Detection (VAD), Punctuation Restoration, Language Models, Speaker Verification, Speaker Diarization and multi-talker ASR.
 
 # Core Features 🎯
 
-**Fun-ASR** focuses on high-precision speech recognition, multi-language support, and industry customization capabilities
+**Fun-ASR** focuses on high-precision speech recognition, checkpoint-specific multilingual support, and industry customization capabilities.
 
 - **Far-field High-noise Recognition:** Deeply optimized for far-distance sound pickup and high-noise scenarios (such as conference rooms, in-vehicle environments, industrial sites, etc.), improving recognition accuracy to **93%**.
 - **Chinese Dialects and Regional Accents:**
   - Supports **7 major dialects**: Wu, Cantonese, Min, Hakka, Gan, Xiang, Jin
   - Covers **26 regional accents**: including Henan, Shaanxi, Hubei, Sichuan, Chongqing, Yunnan, Guizhou, Guangdong, Guangxi and more than 20 other regions
-- **Multi-language Free Speech:** Supports recognition of **31 languages**, with focused optimization on East and Southeast Asian languages, supporting free language switching and mixed recognition.
+- **Checkpoint-specific language coverage:** Fun-ASR-Nano supports Chinese, English, Japanese, and Chinese dialects and accents. Fun-ASR-MLT-Nano supports **31 languages**, with emphasis on East and Southeast Asian languages.
 - **Music Background Lyric Recognition:** Enhanced speech recognition performance under music background interference, supporting accurate recognition of lyric content in songs.
 
 # Environment Setup 🐍
@@ -65,12 +65,13 @@ pip install -r requirements.txt
 
 <a name="usage-tutorial"></a>
 
-# TODO
+# Capability boundaries
 
-- [x] Support returning timestamps
-  > **Known limitation:** In the current open-source release, the released Fun-ASR-Nano `model.pt` checkpoint does not include trained `ctc_decoder.*` / `ctc.*` weights, so timestamp output may be returned but is not reliable. For accurate character-level timestamps, use Paraformer instead, for example `AutoModel(model="paraformer-zh", vad_model="fsmn-vad", ...)`. See [issue #106](https://github.com/FunAudioLLM/Fun-ASR/issues/106).
-- [x] Support speaker diarization
-- [x] Support model training
+- [ ] Reliable checkpoint-native timestamps
+  > The released Fun-ASR-Nano `model.pt` checkpoint does not include trained `ctc_decoder.*` / `ctc.*` weights. Any timestamp output is therefore not reliable. For accurate character-level timestamps, use Paraformer, for example `AutoModel(model="paraformer-zh", vad_model="fsmn-vad", ...)`. See [issue #106](https://github.com/FunAudioLLM/Fun-ASR/issues/106).
+- [ ] Checkpoint-native speaker diarization
+  > Fun-ASR-Nano and Fun-ASR-MLT-Nano do not emit speaker labels by themselves. Compose them in FunASR with the separate `fsmn-vad` and `cam++` models, as shown below.
+- [x] Model training
 
 # Usage 🛠️
 
@@ -117,7 +118,7 @@ def main():
         batch_size=1,
         hotwords=["开放时间"],
         # 中文、英文、日文 for Fun-ASR-Nano-2512
-        # 韩文、越南语、印尼语、泰语、马来语、菲律宾语、阿拉伯语、
+        # 中文、英文、粤语、日文、韩文、越南语、印尼语、泰语、马来语、菲律宾语、阿拉伯语、
         # 印地语、保加利亚语、克罗地亚语、捷克语、丹麦语、荷兰语、爱沙尼亚语、芬兰语、希腊语、
         # 匈牙利语、爱尔兰语、拉脱维亚语、立陶宛语、马耳他语、波兰语、葡萄牙语、罗马尼亚语、
         # 斯洛伐克语、斯洛文尼亚语、瑞典语 for Fun-ASR-MLT-Nano-2512
@@ -165,6 +166,11 @@ On Fun-ASR-Nano-2512 (184 Chinese files / 11,539 s, single H100) this is about
 loss in accuracy. For the highest throughput, use the vLLM path below.
 
 ### Speaker Diarization
+
+This example is a composed FunASR pipeline: FSMN-VAD segments the audio,
+Fun-ASR-Nano transcribes it, CAM++ assigns speaker labels, and CT-Punc restores
+punctuation. The `start` and `end` values are VAD segment boundaries, not
+reliable checkpoint-native character timestamps.
 
 ```python
 from funasr import AutoModel
