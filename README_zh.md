@@ -223,6 +223,11 @@ if __name__ == "__main__":
 
 > Fun-ASR 也已内置原生 vLLM 支持，包括 `AutoModelVLLM` 批量推理、Streaming SDK 和 WebSocket 服务；请参考 [vLLM 中文指南](docs/vllm_guide_zh.md) 与 [可运行示例脚本](examples/README.md)。
 
+## 许可证
+
+- 本仓库源码采用 [Apache License 2.0](./LICENSE)。
+- 模型权重单独发布，并以各模型卡标注的许可证为准。官方 [Fun-ASR-Nano](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-2512) 与 [Fun-ASR-MLT-Nano](https://huggingface.co/FunAudioLLM/Fun-ASR-MLT-Nano-2512) 模型卡目前均标注 Apache-2.0；请在下载具体制品前再次核对对应模型卡。
+
 ## Citations
 
 ```bibtex
