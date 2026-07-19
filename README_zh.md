@@ -36,6 +36,7 @@ Fun-ASR 是通义实验室推出的端到端语音识别模型家族，不同 ch
 
 # 最新动态 🔥
 
+- 2026/07: **Hugging Face Transformers 原生集成正在审查中** — Fun-ASR-Nano 模型实现进度见 [transformers#46180](https://github.com/huggingface/transformers/pull/46180)。在正式进入 Transformers release 前，请使用下方 FunASR、[vLLM](docs/vllm_guide_zh.md) 或 [llama.cpp / GGUF](./runtime/llama.cpp/) 路径完成可运行推理。
 - 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — 支持在 CPU/边缘设备上以单个自包含二进制运行（类似 whisper.cpp），内置 VAD，运行时无需 Python。量化模型最小约 484 MB。[runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](../../releases) · [Nano GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF)
 - 2026/05: **vLLM 推理引擎** — 原生高吞吐批量推理（3-5 倍加速）+ WebSocket 实时流式服务。参见 [vLLM 指南](docs/vllm_guide.md)。
 - 2026/05: FunASR pipeline 可将 Fun-ASR-Nano 与独立的 FSMN-VAD、CAM++ 和标点模型组合，生成逐句说话人标签；说话人分离并非 Nano checkpoint 的原生输出。需从源码安装 FunASR：`pip install git+https://github.com/modelscope/FunASR.git`
