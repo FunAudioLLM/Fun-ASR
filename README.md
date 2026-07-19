@@ -38,6 +38,7 @@ Online Experience:
 
 # What's New 🔥
 
+- 2026/07: **Native Hugging Face Transformers integration is in review** — track [transformers#46180](https://github.com/huggingface/transformers/pull/46180) for the Fun-ASR-Nano model implementation. Until it lands in an official Transformers release, use the FunASR, [vLLM](docs/vllm_guide.md), or [llama.cpp / GGUF](./runtime/llama.cpp/) paths below for runnable inference.
 - 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — run it on CPU/edge as a single self-contained binary (whisper.cpp-style), built-in VAD, no Python at runtime. Quantized models down to ~484 MB. [runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](../../releases) · [Nano GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF)
 - 2026/05: **vLLM Inference Engine** — native high-throughput batch (3-5x faster) + WebSocket real-time streaming service. See [vLLM Guide](docs/vllm_guide.md).
 - 2026/05: The FunASR pipeline can combine Fun-ASR-Nano with separate FSMN-VAD, CAM++, and punctuation models to produce per-sentence speaker labels. Diarization is not a native output of the Nano checkpoint. Requires installing FunASR from source: `pip install git+https://github.com/modelscope/FunASR.git`
