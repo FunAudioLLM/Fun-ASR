@@ -42,7 +42,7 @@ python examples/speaker_diarization.py path/to/meeting.wav
 Install vLLM before running this example:
 
 ```bash
-pip install "funasr>=1.3.25" "vllm>=0.12.0"
+pip install "funasr>=1.3.26" "vllm>=0.12.0"
 python examples/vllm_batch.py --tensor-parallel-size 1
 python examples/vllm_batch.py audio1.wav audio2.wav --hotwords 张三 北京
 ```
@@ -55,7 +55,7 @@ the audio first or use the `AutoModel(..., vad_model="fsmn-vad")` path.
 Install vLLM before running this example:
 
 ```bash
-pip install "funasr>=1.3.25" "vllm>=0.12.0"
+pip install "funasr>=1.3.26" "vllm>=0.12.0"
 python examples/streaming_sdk.py --hub hf --chunk-ms 720
 python examples/streaming_sdk.py path/to/audio.wav
 ```

@@ -35,7 +35,7 @@
 ## 1. Installation & Environment
 
 ```bash
-pip install "funasr>=1.3.25"
+pip install "funasr>=1.3.26"
 pip install vllm>=0.12.0
 pip install safetensors tiktoken websockets regex fastapi uvicorn python-multipart
 
