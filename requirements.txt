@@ -1,7 +1,7 @@
 torch>=2.9.0
 torchaudio>=2.9.0
 transformers>=4.51.3
-funasr>=1.3.24
+funasr>=1.3.25
 zhconv
 whisper_normalizer
 pyopenjtalk-plus
