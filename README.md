@@ -319,7 +319,7 @@ for result in engine.streaming_generate("audio.wav", language="中文"):
 ### Install
 
 ```bash
-pip install "funasr>=1.3.25" "vllm>=0.12.0"
+pip install "funasr>=1.3.26" "vllm>=0.12.0"
 ```
 
 # Finetune
