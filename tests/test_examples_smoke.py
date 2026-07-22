@@ -71,3 +71,15 @@ class RunnableExamplesSmokeTest(unittest.TestCase):
             for snippet in stale_snippets:
                 with self.subTest(readme=readme_path, snippet=snippet):
                     self.assertNotIn(snippet, readme)
+
+    def test_localized_readmes_surface_nano_gguf_edge_path(self):
+        required_links = [
+            "https://www.funasr.com/llama-cpp.html",
+            "https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF",
+            "https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF",
+        ]
+        for readme_path in ("README_ja.md", "README_ko.md"):
+            readme = (ROOT / readme_path).read_text(encoding="utf-8")
+            for link in required_links:
+                with self.subTest(readme=readme_path, link=link):
+                    self.assertIn(link, readme)
