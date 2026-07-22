@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 DOCS = [
     "README.md",
+    "README_zh.md",
     "docs/finetune.md",
     "docs/finetune_zh.md",
     "docs/vllm_guide.md",
@@ -37,14 +38,14 @@ def test_docs_use_quoted_current_funasr_install_commands():
 
 def test_docs_relative_markdown_links_point_to_existing_files():
     link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
-    for relpath in [path for path in DOCS if path.startswith("docs/")]:
+    for relpath in DOCS:
         doc_path = ROOT / relpath
         for target in link_pattern.findall(doc_path.read_text()):
             parsed = urlparse(target)
             if parsed.scheme or parsed.netloc or target.startswith("#"):
                 continue
             link_path = unquote(parsed.path)
-            if not link_path or link_path.startswith(("#", "../")):
+            if not link_path or link_path.startswith("#"):
                 continue
             resolved = (doc_path.parent / link_path).resolve()
             assert resolved.exists(), f"{relpath} links to missing file: {target}"
