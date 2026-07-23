@@ -2,6 +2,8 @@
 
 「[简体中文](README_zh.md)」|「[English](README.md)」|「[日本語](README_ja.md)」|「한국어」
 
+> **FunASR 1.3.27:** vLLM 시작에 실패하면 OpenAI 호환 서버가 폴백 `AutoModel`을 한 번만 생성해 캐시하고 재사용합니다. vLLM/VAD 초기화가 중간에 실패한 경우에는 다시 시도할 수 있습니다. `pip install -U "funasr==1.3.27"`로 설치하세요. [릴리스 노트](https://github.com/modelscope/FunASR/releases/tag/v1.3.27) · [배포 가이드](https://www.funasr.com/en/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html) · [PyPI](https://pypi.org/project/funasr/1.3.27/)
+
 Fun-ASR는 통의(Tongyi) 실험실에서 개발한 엔드투엔드 음성 인식 모델 제품군입니다. 체크포인트별 지원 범위가 다릅니다. Fun-ASR-Nano-2512는 중국어·영어·일본어와 중국어 방언·지역 억양을 지원하고, Fun-ASR-MLT-Nano-2512는 31개 언어를 지원합니다. 두 체크포인트 모두 FunASR에서 추론과 서빙에 사용할 수 있습니다.
 
 <div align="center">
