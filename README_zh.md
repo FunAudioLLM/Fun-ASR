@@ -36,6 +36,7 @@ Fun-ASR 是通义实验室推出的端到端语音识别模型家族，不同 ch
 
 # 最新动态 🔥
 
+- 2026/07：**FunASR 1.3.27 提升 Fun-ASR-Nano 服务可靠性** — vLLM 启动失败后，OpenAI 兼容服务会复用同一个 `AutoModel` 缓存回退，而不是重复构建模型；vLLM/VAD 部分初始化失败后仍可重试。安装命令：`pip install -U "funasr==1.3.27"`。[发布说明](https://github.com/modelscope/FunASR/releases/tag/v1.3.27) · [部署指南](https://www.funasr.com/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html) · [PyPI](https://pypi.org/project/funasr/1.3.27/)
 - 2026/07: **Hugging Face Transformers 原生集成正在审查中** — Fun-ASR-Nano 模型实现进度见 [transformers#46180](https://github.com/huggingface/transformers/pull/46180)。在正式进入 Transformers release 前，请使用下方 FunASR、[vLLM](docs/vllm_guide_zh.md) 或 [llama.cpp / GGUF](./runtime/llama.cpp/) 路径完成可运行推理。
 - 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — 支持在 CPU/边缘设备上以单个自包含二进制运行（类似 whisper.cpp），内置 VAD，运行时无需 Python。量化模型最小约 484 MB。[runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](https://github.com/FunAudioLLM/Fun-ASR/releases) · [Nano GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF)
 - 2026/05: **vLLM 推理引擎** — 原生高吞吐批量推理（3-5 倍加速）+ WebSocket 实时流式服务。参见 [vLLM 指南](docs/vllm_guide.md)。

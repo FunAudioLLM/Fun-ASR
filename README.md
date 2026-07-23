@@ -38,6 +38,7 @@ Online Experience:
 
 # What's New 🔥
 
+- 2026/07: **FunASR 1.3.27 improves Fun-ASR-Nano serving reliability** — after a vLLM startup failure, the OpenAI-compatible server reuses one cached fallback `AutoModel` instead of rebuilding it; partial vLLM/VAD initialization remains retryable. Install with `pip install -U "funasr==1.3.27"`. [Release notes](https://github.com/modelscope/FunASR/releases/tag/v1.3.27) · [deployment guide](https://www.funasr.com/en/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html) · [PyPI](https://pypi.org/project/funasr/1.3.27/)
 - 2026/07: **Native Hugging Face Transformers integration is in review** — track [transformers#46180](https://github.com/huggingface/transformers/pull/46180) for the Fun-ASR-Nano model implementation. Until it lands in an official Transformers release, use the FunASR, [vLLM](docs/vllm_guide.md), or [llama.cpp / GGUF](./runtime/llama.cpp/) paths below for runnable inference.
 - 2026/06: **Fun-ASR-Nano on llama.cpp / GGUF** — run it on CPU/edge as a single self-contained binary (whisper.cpp-style), built-in VAD, no Python at runtime. Quantized models down to ~484 MB. [runtime/llama.cpp/](./runtime/llama.cpp/) · [Releases](https://github.com/FunAudioLLM/Fun-ASR/releases) · [Nano GGUF](https://huggingface.co/FunAudioLLM/Fun-ASR-Nano-GGUF) · [FSMN-VAD GGUF](https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF)
 - 2026/05: **vLLM Inference Engine** — native high-throughput batch (3-5x faster) + WebSocket real-time streaming service. See [vLLM Guide](docs/vllm_guide.md).

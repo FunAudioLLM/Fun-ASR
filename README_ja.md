@@ -2,6 +2,8 @@
 
 「[简体中文](README_zh.md)」|「[English](README.md)」|「日本語」
 
+> **FunASR 1.3.27:** vLLM の起動に失敗した場合、OpenAI 互換サーバーはフォールバック用の `AutoModel` を一度だけ構築してキャッシュし、再利用します。vLLM/VAD の初期化が途中で失敗した場合は再試行できます。`pip install -U "funasr==1.3.27"` でインストールしてください。[リリースノート](https://github.com/modelscope/FunASR/releases/tag/v1.3.27) · [デプロイガイド](https://www.funasr.com/en/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html) · [PyPI](https://pypi.org/project/funasr/1.3.27/)
+
 Fun-ASRは通義実験室が開発したエンドツーエンド音声認識モデルファミリーです。チェックポイントごとに対応範囲が異なり、Fun-ASR-Nano-2512は中・英・日と中国語方言・地域アクセント、Fun-ASR-MLT-Nano-2512は31言語に対応します。どちらもFunASRから推論・配信できます。
 
 <div align="center">

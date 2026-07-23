@@ -38,6 +38,25 @@ def test_docs_use_quoted_current_funasr_install_commands():
     assert (ROOT / "examples/README.md").read_text().count('"funasr>=1.3.26"') == 2
 
 
+def test_readmes_surface_funasr_1327_nano_serving_release():
+    required = [
+        "funasr==1.3.27",
+        "AutoModel",
+        "vLLM",
+        "https://github.com/modelscope/FunASR/releases/tag/v1.3.27",
+    ]
+    guides = {
+        "README.md": "https://www.funasr.com/en/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html",
+        "README_zh.md": "https://www.funasr.com/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html",
+        "README_ja.md": "https://www.funasr.com/en/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html",
+        "README_ko.md": "https://www.funasr.com/en/blog/funasr-v1-3-27-language-metadata-vllm-fallback.html",
+    }
+    for relpath, guide in guides.items():
+        text = (ROOT / relpath).read_text()
+        for marker in [*required, guide]:
+            assert marker in text, f"{relpath} is missing {marker}"
+
+
 def test_docs_relative_markdown_links_point_to_existing_files():
     link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
     for relpath in DOCS:
